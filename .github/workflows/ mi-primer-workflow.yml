@@ -12,3 +12,8 @@ jobs:
         MI_VARIABLE: Hola mundo
       run: |
         echo $MI_VARIABLE.
+    - name: Imprimir2
+      env:
+        MI_VARIABLE: Esto es una berraquera
+      run: |
+        echo mi nuevo mensaje es: $MI_VARIABLE.
