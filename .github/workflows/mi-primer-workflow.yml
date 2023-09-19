@@ -1,14 +1,28 @@
-name: Hola mundo
+name: CI
+
+# Controls when the action will run.
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  Mi-primer-job:
-    name: Mi primer job
+  job1:
+    name: Pruebas
     runs-on: ubuntu-latest
     steps:
-    - name: Imprimir
-      env:
-        MI_VARIABLE: Hola mundo
+    - name: Checkout de repositorio
+      uses: actions/checkout@v2
+    - name: Configuración de entorno de python
+      uses: actions/setup-python@v2
+      with:
+          python-version: '3.7'
+    - name: Instalación de librerías y dependencias
       run: |
-        echo $MI_VARIABLE.
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Correr pruebas
+      id: correr-pruebas
+      run: python -m unittest discover -s tests
