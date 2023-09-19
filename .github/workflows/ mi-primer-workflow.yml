@@ -1,19 +1,21 @@
 name: Hola mundo
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - develop
 jobs:
-  Mi-primer-job:
+  my-first-job:
     name: Mi primer job
     runs-on: ubuntu-latest
     steps:
-    - name: Imprimir
-      env:
-        MI_VARIABLE: Hola mundo
-      run: |
-        echo $MI_VARIABLE.
-    - name: Imprimir2
-      env:
-        MI_VARIABLE: Esto es una berraquera
-      run: |
-        echo mi nuevo mensaje es: $MI_VARIABLE.
+      - name: Imprimir
+        env:
+          MI_VARIABLE: Hello World!
+        run: |
+          echo $MI_VARIABLE
+      - name: Imprimir 2
+        env:
+          MI_VARIABLE2: Que berraquera!!
+        run: |
+          echo $MI_VARIABLE2
