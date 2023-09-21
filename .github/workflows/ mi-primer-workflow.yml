@@ -81,7 +81,7 @@ jobs:
             git push origin release
           
             git checkout main
-            git merge develop --no-ff --no-edit
+            git merge release --no-ff --no-edit
             git push origin main
           fi
   automerge:
