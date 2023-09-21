@@ -49,22 +49,19 @@ jobs:
       - name: Check commit message for keyword
         run: |
           keyword="Merge"
-          commit_message=$(git log --format=%B -n 1 ${{ github.sha }})
-          if [[ "$commit_message" == *"$keyword"* ]]; then
-            echo "Keyword found in commit message."
-            should_create_release=true
+          commit_message=$(git log --format=%B -n 1 $GITHUB_SHA)
+          if [[ $commit_message == *"$keyword"* ]]; then
+            echo "::set-output name=contains_keyword::true"
           else
-            echo "Keyword not found in commit message. Exiting..."
-            should_create_release=false
+            echo "::set-output name=contains_keyword::false"
           fi
       - name: Create Release Branch
         id: create-release-branch
+        if: steps.keyword.outputs.contains_keyword == 'true'
         run: |
-          echo "Message: " $should_create_release
-          if [ "$should_create_release" = true ]; then
-            git checkout -b release develop
-            git push origin release
-          fi
+          echo "Message: " $steps.keyword.outputs.contains_keyword
+          git checkout -b release develop
+          git push origin release
       - name: Merge Develop into Release
         if: ${{ steps.create-release-branch.outcome == 'success' }}
         run: |
