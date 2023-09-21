@@ -60,6 +60,7 @@ jobs:
       - name: Create Release Branch
         id: create-release-branch
         run: |
+          echo "Message: " $should_create_release
           if [ "$should_create_release" = true ]; then
             git checkout -b release develop
             git push origin release
@@ -67,6 +68,7 @@ jobs:
       - name: Merge Develop into Release
         if: ${{ steps.create-release-branch.outcome == 'success' }}
         run: |
+          echo "Message: " $should_create_release
           if [ "$should_create_release" = true ]; then
             git checkout release
             git merge develop --no-ff --no-edit
@@ -75,6 +77,7 @@ jobs:
       - name: Merge Develop into Release and Main
         if: ${{ steps.create-release-branch.outcome == 'success' }}
         run: |
+          echo "Message: " $should_create_release
           if [ "$should_create_release" = true ]; then
             git checkout release
             git merge develop --no-ff --no-edit
