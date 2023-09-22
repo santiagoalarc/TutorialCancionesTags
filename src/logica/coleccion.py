@@ -17,7 +17,7 @@ class Coleccion():
             session.commit()
             return True
 
-        #No00000
+        #Este cambio solo se queda en feature/cambios
         else:
             return False
 
