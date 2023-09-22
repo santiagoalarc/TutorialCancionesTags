@@ -15,6 +15,7 @@ class Coleccion():
             album = Album(titulo=titulo, ano=anio, descripcion=descripcion, medio=medio)
             session.add(album)
             session.commit()
+
             return True
         else:
             return False
