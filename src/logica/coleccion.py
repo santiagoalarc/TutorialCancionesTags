@@ -17,7 +17,7 @@ class Coleccion():
             session.commit()
             return True
 
-        #Este cambio solo se queda en feature/cambios
+        #Este cambio sube a main y a release
         else:
             return False
 
