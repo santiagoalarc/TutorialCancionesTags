@@ -17,7 +17,7 @@ class Coleccion():
             session.commit()
             return True
 
-#SComentario
+#No debería estar en la rama release ni en main, solo en develop
         else:
             return False
 
