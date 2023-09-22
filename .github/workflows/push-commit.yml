@@ -35,7 +35,6 @@ jobs:
         MENSAJE_EXITO: Todas las pruebas fueron exitosas
       run: echo "::set-output name=respuesta::${MENSAJE_EXITO}"
     - name: Validar palabra clave en commit para merge a develop
-      #if: ${{ contains(github.event.head_commit.message, 'final') }} && ${{ github.ref }} != 'develop'
       if: (github.ref != 'refs/heads/develop' && contains(github.event.head_commit.message, 'final'))
       uses: tukasz/direct-merge-action@master
       with:
@@ -43,14 +42,14 @@ jobs:
         source-branch: ${{ github.ref }}
         target-branch: develop
     - name: Validar palabra clave en commit para merge a release
-      if: ${{ contains(github.event.head_commit.message, 'mezclar') }} && ${{ github.ref }} == 'develop'
+      if: (github.ref == 'refs/heads/develop' && contains(github.event.head_commit.message, 'mezclar'))
       uses: tukasz/direct-merge-action@master
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         source-branch: ${{ github.ref }}
         target-branch: release
     - name: Mezcla release -> main
-      if: ${{ contains(github.event.head_commit.message, 'mezclar') }} && ${{ github.ref }} == 'develop'
+      if: (github.ref == 'refs/heads/develop' && contains(github.event.head_commit.message, 'mezclar'))
       uses: tukasz/direct-merge-action@master
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
