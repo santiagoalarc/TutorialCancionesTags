@@ -16,52 +16,72 @@ jobs:
     name: Pruebas
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout de repositorio
-      uses: actions/checkout@v2
-    - name: Configuración de entorno de python
-      uses: actions/setup-python@v2
-      with:
+      - name: Checkout de repositorio
+        uses: actions/checkout@v2
+      - name: Configuración de entorno de python
+        uses: actions/setup-python@v2
+        with:
           python-version: '3.7'
-    - name: Instalación de librerías y dependencias
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install faker
-    - name: Correr pruebas
-      id: correr-pruebas
-      run: python -m unittest discover -s tests -v
-    - name: Validar resultado con errores
-      if: ${{ failure() }}
-      env:
-        MENSAJE_ERROR: Una o varias pruebas fallaron
-      run: echo "::set-output name=respuesta::${MENSAJE_ERROR}"
-    - name: Validar resultado sin errores
-      id: validate-result-successfully
-      if: ${{ success() }}
-      env:
-        MENSAJE_EXITO: Todas las pruebas fueron exitosas
-      run: echo "::set-output name=respuesta::${MENSAJE_EXITO}"
-    - name: Calculo de cubrimiento
-      id: cubrimiento
-      run: |
+      - name: Instalación de librerías y dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install faker
+      - name: Correr pruebas
+        id: correr-pruebas
+        run: python -m unittest discover -s tests -v
+      - name: Validar resultado con errores
+        if: ${{ failure() }}
+        env:
+          MENSAJE_ERROR: Una o varias pruebas fallaron
+        run: echo "::set-output name=respuesta::${MENSAJE_ERROR}"
+      - name: Validar resultado sin errores
+        id: validate-result-successfully
+        if: ${{ success() }}
+        env:
+          MENSAJE_EXITO: Todas las pruebas fueron exitosas
+        run: echo "::set-output name=respuesta::${MENSAJE_EXITO}"
+      - name: Calculo de cubrimiento
+        id: cubrimiento
+        run: |
           coverage run -m unittest discover -s tests -v
           coverage report -m
-    - name: Verificar commit, crear realese branch y merge
-      id: check-commit-message
-      if: ${{ success() }}
-      run: |
-        commits_with_merge=$(git log --grep="Merge")
-          if [[ ! -z $commits_with_merge ]]; then
-            echo "Palabra clave encontrada en el mensaje del commit." $commits_with_merge
-            git fetch
-            git checkout -b release
+      - name: Desplegar cambios a develop
+        if: success()
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git checkout develop
+          git merge --no-ff ${{ github.event.pull_request.head.sha }}
+          git push origin develop
+      - name: Create Release Branch
+        id: create-release-branch
+        if: steps.keyword.outputs.contains_keyword == 'true'
+        run: |
+          echo "Message: " $steps.keyword.outputs.contains_keyword
+          git checkout -b release develop
+          git push origin release
+      - name: Merge Develop into Release
+        if: ${{ steps.create-release-branch.outcome == 'success' }}
+        run: |
+          echo "Message: " $should_create_release
+          if [ "$should_create_release" = true ]; then
+            git checkout release
+            git merge develop --no-ff --no-edit
             git push origin release
+          fi
+      - name: Merge Develop into Release and Main
+        if: ${{ steps.create-release-branch.outcome == 'success' }}
+        run: |
+          echo "Message: " $should_create_release
+          if [ "$should_create_release" = true ]; then
+            git checkout release
+            git merge develop --no-ff --no-edit
+            git push origin release
+          
             git checkout main
-            git merge --no-ff release
+            git merge release --no-ff --no-edit
             git push origin main
-          else
-            echo "Palabra clave no encontrada en el mensaje del commit. Finalizando flujo de trabajo." $commits_with_merge
-            create_release=false
           fi
   automerge:
     name: Automerge
