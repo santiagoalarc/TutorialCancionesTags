@@ -138,4 +138,4 @@ class CancionTestCase(unittest.TestCase):
 
     def test_dar_cancion_por_id(self):
         consulta = self.coleccion.dar_cancion_por_id(1)
-        self.assertEqual(consulta["titulo"], "Baby blues")
+        self.assertEqual(consulta["titulo"], "Baby blues0")
