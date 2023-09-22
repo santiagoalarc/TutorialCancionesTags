@@ -17,6 +17,7 @@ class Coleccion():
             session.commit()
             return True
 
+#SComentario
         else:
             return False
 
