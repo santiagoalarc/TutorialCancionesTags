@@ -43,14 +43,14 @@ jobs:
         target-branch: develop
     - name: Validar palabra clave en commit para merge a release
       uses: tukasz/direct-merge-action@master
-      if: ${{ contains(github.event.head_commit.message, 'final') }} && ${{ github.ref }} == 'develop'
+      if: ${{ contains(github.event.head_commit.message, 'mezclar') }} && ${{ github.ref }} == 'develop'
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         source-branch: ${{ github.ref }}
         target-branch: release
     - name: Mezcla release -> main
       uses: tukasz/direct-merge-action@master
-      if: ${{ contains(github.event.head_commit.message, 'final') }} && ${{ github.ref }} == 'develop'
+      if: ${{ contains(github.event.head_commit.message, 'mezclar') }} && ${{ github.ref }} == 'develop'
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         source-branch: release
