@@ -16,6 +16,8 @@ class Coleccion():
             session.add(album)
             session.commit()
             return True
+
+#SComentario
         else:
             return False
 
