@@ -50,6 +50,7 @@ jobs:
         target-branch: release
     - name: Mezcla release -> main
       uses: tukasz/direct-merge-action@master
+      if: ${{ contains(github.event.head_commit.message, 'final') }} && ${{ github.ref }} == 'develop'
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         source-branch: release
